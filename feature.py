@@ -35,6 +35,7 @@ def get_stochastic_slow_k(fast_k, n=3):
     slow_k = fast_k.rolling(n).mean()
     return slow_k
 
+
 # Slow %D = Slow %K의 t기간 이동평균(S170MA)
 def get_stochastic_slow_d(slow_k, n=3):
     slow_d = slow_k.rolling(n).mean()
@@ -52,3 +53,24 @@ def get_rsi(price, period=14):
     RS = _gain / _loss
 
     return pd.Series(100 - (100 / (1 + RS)), name="RSI")
+
+
+def value_average(df_value, window):
+    value_avg = df_value.ewm(com=window).mean()
+    return value_avg
+
+
+def get_obv(df_price, df_volume):
+    obv = [0]
+    arr_price = df_price.values
+    arr_volume = df_volume.values
+
+    for i in range(1, len(arr_price)):
+        if arr_price[i] > arr_price[i - 1]:
+            obv.append(obv[-1] + arr_volume[i])
+        elif arr_price[i] < arr_price[i - 1]:
+            obv.append(obv[-1] - arr_volume[i])
+        else:
+            obv.append(obv[-1])
+
+    return obv

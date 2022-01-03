@@ -27,7 +27,7 @@ def get_actual_buy_time(df, target_window, target_threshold):
     for i in idx_predict:
         if i > jump_idx:
             actual_buy[i] = 1
-            for j in range(i + 1, i + 1 + target_window):
+            for j in range(i + 1, min(len(arr_predict), i + 1 + target_window)):
                 jump_idx = j
                 if arr_buy[j] / arr_buy[i] >= 1 + target_threshold:
                     break
